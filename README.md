@@ -15,14 +15,14 @@ There are two classes in tklog.py: (1) tklog, (2) winlog.
 
 **tklog class** can be used anywhere in GUI window, it's an enhanced scrolledtext
 widget (from Python standard libary) which added to response Up and Donw key 
-press, **right click will open a menu that gives you two options: 
-(1) Export all to file, (2) Copy to clipboard. **
+press, right click will open a menu that gives you two options: 
+(1) Export all to file, (2) Copy to clipboard. 
 
 
 **winlog class** is a modaless toplevel window by using tklog, that's all.
 
 
-All text area is readonly, and so you do not need to worry that the log 
+All text area is **readonly**, and so you do not need to worry that the log 
 information would be broken by any reasons. 
 
 
@@ -48,4 +48,7 @@ information would be broken by any reasons.
  
  
  This is what you should expected:
-![tklog](https://www.pynote.net/pics/uploads/2019/09/run_tklog.py_.jpg)
+![tklog](https://www.pynote.net/pics/uploads/2019/09/python3_tklog.jpg)
+
+
+tklog is very small, so check source code when have problems.
