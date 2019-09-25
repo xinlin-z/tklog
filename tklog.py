@@ -4,11 +4,16 @@ from tkinter.scrolledtext import ScrolledText
 from tkinter.filedialog import asksaveasfilename
 
 
+# in Win system, the default font is too ugly.
+_font = ('microsoft yahei',12)
+
+
 class tklog(ScrolledText):
     """readonly scrolled text log class"""
 
     def __init__(self, **kw):
-        super().__init__(**kw,state=tk.DISABLED,cursor='plus',wrap=tk.WORD)
+        super().__init__(**kw,state=tk.DISABLED,cursor='plus',
+                            wrap=tk.WORD,font=_font)
         self.tag_configure('red', foreground='red')
         self.tag_configure('blue', foreground='blue')
         self.rpop = tk.Menu(self, tearoff=0)
@@ -75,10 +80,10 @@ class tklog(ScrolledText):
 class winlog():
     """readonly modaless Toplevel log window class"""
 
-    def __init__(self, root=None, title='Log Window'):
+    def __init__(self, root=None, title='Log Window', **kw):
         self.win = Toplevel(root)
         self.win.title(title)
-        self.st = tklog(master=self.win)
+        self.st = tklog(master=self.win, **kw)
         self.st.pack(fill='both', expand=True)
 
     def log(self, content, end='\n'):
@@ -103,7 +108,7 @@ if __name__ == '__main__':  # test code
     eblog.log('this is log')
     eblog.warning('this is warning')
     eblog.error('this is error')
-    wlog = winlog(root, 'test winlog class')
+    wlog = winlog(root, 'test winlog class', width=48)
     wlog.log('this modaless log window is created by winlog class')
     wlog.log('I am a modaless window based on root')
     wlog.log('this is log')
