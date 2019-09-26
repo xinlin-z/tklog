@@ -5,7 +5,7 @@ from tkinter.filedialog import asksaveasfilename
 
 
 # in Win system, the default font is too ugly.
-_font = ('microsoft yahei',12)
+_font = ('monospace',12)
 
 
 class tklog(ScrolledText):
