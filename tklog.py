@@ -85,6 +85,14 @@ class winlog():
         self.win.title(title)
         self.st = tklog(master=self.win, **kw)
         self.st.pack(fill='both', expand=True)
+        self.win.bind('<FocusIn>', self._focusIn)
+        self.win.bind('<FocusOut>', self._focusOut)
+
+    def _focusIn(self, event):
+        self.win.attributes('-alpha', 1.0)
+
+    def _focusOut(self, evnet):
+        self.win.attributes('-alpha', 0.6)
 
     def log(self, content, end='\n'):
         self.st.log(content, end)
@@ -101,7 +109,7 @@ class winlog():
 
 if __name__ == '__main__':  # test code
     root = tk.Tk()
-    eblog=  tklog(master=root)
+    eblog = tklog(master=root)
     eblog.pack()
     eblog.log('this log text widget is created by tklog class')
     eblog.log('I am on root window')
