@@ -80,19 +80,37 @@ class tklog(ScrolledText):
 class winlog():
     """readonly modaless Toplevel log window class"""
 
-    def __init__(self, root=None, title='Log Window', **kw):
+    def __init__(self, root=None, title='Log Window'):
         self.win = Toplevel(root)
         self.win.title(title)
-        self.st = tklog(master=self.win, **kw)
+        self.win.geometry('800x600')
+        self.frame_0 = tk.Frame(self.win)
+        self.frame_0.pack(fill='both', expand=True)
+        self.st = tklog(master=self.frame_0, height=0)
         self.st.pack(fill='both', expand=True)
+        self.frame_1 = tk.Frame(self.win)
+        self.frame_1.pack(fill=tk.X)
+        self.top = tk.Button(self.frame_1, text='Pin', command=self._pin)
+        self.top.pack(side=tk.LEFT, padx=2, pady=2)
         self.win.bind('<FocusIn>', self._focusIn)
         self.win.bind('<FocusOut>', self._focusOut)
+        self.pin = 0  # default is unpinned
 
     def _focusIn(self, event):
         self.win.attributes('-alpha', 1.0)
 
-    def _focusOut(self, evnet):
+    def _focusOut(self, event):
         self.win.attributes('-alpha', 0.6)
+
+    def _pin(self):
+        if self.pin == 0:
+            self.win.attributes('-topmost', True)
+            self.pin = 1
+            self.top['text'] = 'Unpin'
+        elif self.pin == 1:
+            self.win.attributes('-topmost', False)
+            self.pin = 0
+            self.top['text'] = 'Pin'
 
     def log(self, content, end='\n'):
         self.st.log(content, end)
@@ -116,7 +134,7 @@ if __name__ == '__main__':  # test code
     eblog.log('this is log')
     eblog.warning('this is warning')
     eblog.error('this is error')
-    wlog = winlog(root, 'test winlog class', width=48)
+    wlog = winlog(root, 'test winlog class')
     wlog.log('this modaless log window is created by winlog class')
     wlog.log('I am a modaless window based on root')
     wlog.log('this is log')
