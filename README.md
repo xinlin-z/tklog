@@ -27,6 +27,8 @@ and Donw key press, right click will open a menu that gives you 3 options:
 
 (3) Clean (all).
 
+And you can log PNG picture also. 
+
 
 **winlog class** is a modaless toplevel window inherited from tklog. 
 
@@ -41,4 +43,4 @@ information would be broken by unexpected or careless operations.
 
     $ python3 tklog.py
 
-You'll see two windows show.
+You'll see two log windows show, and code example.
