@@ -10,45 +10,35 @@ You can not use print to log easily. By using tk.Text or scrolledtext widget
 is good choice, and anyway here I give you a "better" alternative: tklog.
 
 
-There are two classes in tklog.py: (1) tklog, (2) winlog.
+There are two classes in tklog.py: 
+
+(1) tklog, 
+
+(2) winlog.
 
 
-**tklog class** can be used anywhere in GUI window, it's an enhanced scrolledtext
-widget (from Python standard libary) which added to response Up and Donw key 
-press, right click will open a menu that gives you two options: 
-(1) Export all to file, (2) Copy to clipboard. 
+**tklog class** can be used anywhere in GUI window, it's an enhanced 
+scrolledtext widget (from Python standard libary) which added to response Up 
+and Donw key press, right click will open a menu that gives you 3 options: 
+
+(1) Export (all to file), 
+
+(2) Copy (selected to clipboard),
+
+(3) Clean (all).
 
 
-**winlog class** is a modaless toplevel window by using tklog, that's all.
+**winlog class** is a modaless toplevel window inherited from tklog. 
 
 
 All text area is **readonly**, and so you do not need to worry that the log 
-information would be broken by any reasons. 
+information would be broken by unexpected or careless operations. 
 
 
 **中文参考： https://www.pynote.net/archives/1207**
 
-## interfaces for tklog
-
-    tklog.log  # log in black
-    tklog.waring  # log in blue
-    tklog.error  # log in red
-    tklog.clean  # clean all log info
-    
-## interfaces for winlog
-
-    winlog.log
-    winlog.warning
-    winlog.error
-    winlog.destroy  # self destroy
-    
-## test code
+# run test code
 
     $ python3 tklog.py
- 
- 
- This is what you should expected:
-![tklog](https://www.pynote.net/pics/uploads/2019/09/python3_tklog.jpg)
 
-
-tklog is very small, so check source code when have problems.
+You'll see two windows show.
