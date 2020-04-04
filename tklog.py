@@ -166,6 +166,7 @@ if __name__ == '__main__':  # test code
               >>> from tklog import tklog
               >>> root = tk.Tk()
               >>> eblog = tklog(master=root)
+              >>> eblog.pack()
               # now we can call methods of eblog object"""))
     eblog.log('>>> eblog.title(\'this is title\')')
     eblog.title('this is title')
