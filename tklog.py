@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import Toplevel
+from tkinter import Toplevel, PhotoImage
 from tkinter.scrolledtext import ScrolledText
 from tkinter.filedialog import asksaveasfilename
 
@@ -24,7 +24,7 @@ class tklog(ScrolledText):
         self.bind('<Button-1>', self._popdown)
         self.bind('<Up>', self._lineUp)
         self.bind('<Down>', self._lineDown)
-        self.focus_set()  # !
+        self.pngList = []
 
     def _popup(self, event):
         self.rpop.post(event.x_root, event.y_root)
@@ -83,6 +83,15 @@ class tklog(ScrolledText):
         self.insert(tk.END, content+end, 'CRITICAL')
         self.see(tk.END)
         self.config(state=tk.DISABLED)
+
+    def png(self, pngFile):
+        try:
+            self.pngList.append(PhotoImage(file=pngFile))
+            self.image_create(tk.END, 
+                              image=self.pngList[len(self.pngList)-1])
+            self.log('\n', end='')
+        except Exception as e: 
+            self.debug(repr(e))
     
     def _lineUp(self, event):
         self.yview('scroll', -1, 'units')
@@ -148,6 +157,9 @@ class winlog():
 
     def critical(self, content, end='\n'):
         self.st.critical(content, end)
+
+    def png(self, pngFile):
+        self.st.png(pngFile)
     
     def destroy(self):
         self.win.destroy()
@@ -159,7 +171,7 @@ if __name__ == '__main__':  # test code
     root.title('tklog class show')
     # tklog class show
     eblog = tklog(master=root)
-    eblog.pack()
+    eblog.pack(fill='both', expand=True)
     eblog.log(textwrap.dedent("""\
               This log widget in root window is created by tklog class.
               Suppose we have code below:
@@ -180,6 +192,9 @@ if __name__ == '__main__':  # test code
     eblog.error('this is error')
     eblog.log('>>> eblog.critical(\'this is critical\')')
     eblog.critical('this is critical')
+    eblog.log('>>> eblog.png(\'./pynote.net.png\')')
+    eblog.png('pynote.net.png')
+    eblog.title('Have fun...')
     # winlog class show
     wlog = winlog(root, 'winlog class show')
     wlog.title('winlog class intro:')
@@ -191,6 +206,8 @@ if __name__ == '__main__':  # test code
     wlog.warning('warning info')
     wlog.error('error info')
     wlog.critical('critical info')
+    wlog.png('pynote.net.png')
+    wlog.title('Have fun...')
     root.mainloop()
 
 
