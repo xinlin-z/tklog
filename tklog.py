@@ -4,21 +4,22 @@ from tkinter.scrolledtext import ScrolledText
 from tkinter.filedialog import asksaveasfilename
 
 
-# in Win system, the default font is too ugly.
-_font = ('monospace',12)
-
-
 class tklog(ScrolledText):
     """readonly scrolled text log class"""
 
     def __init__(self, **kw):
-        super().__init__(**kw,state=tk.DISABLED,cursor='plus',
-                            wrap=tk.WORD,font=_font)
-        self.tag_configure('red', foreground='red')
-        self.tag_configure('blue', foreground='blue')
+        super().__init__(**kw, state=tk.DISABLED, cursor='plus',
+                               wrap=tk.WORD, font=('monospace',12))
+        self.tag_config('TITLE', foreground='blue')
+        self.tag_config('INFO', foreground='black')
+        self.tag_config('DEBUG', foreground='gray')
+        self.tag_config('WARNING', foreground='orange')
+        self.tag_config('ERROR', foreground='red')
+        self.tag_config('CRITICAL', foreground='red', underline=1)
         self.rpop = tk.Menu(self, tearoff=0)
-        self.rpop.add_command(label='Export all to file',command=self._copyas)
-        self.rpop.add_command(label='Copy to clipboard',command=self._copyto)
+        self.rpop.add_command(label='Export', command=self._copyas)
+        self.rpop.add_command(label='Copy', command=self._copyto)
+        self.rpop.add_command(label='Clean', command=self.clean) 
         self.bind('<Button-3>', self._popup)
         self.bind('<Button-1>', self._popdown)
         self.bind('<Up>', self._lineUp)
@@ -47,24 +48,42 @@ class tklog(ScrolledText):
             pass  # skip TclError while no selection
         else: self.clipboard_append(selection)
 
-    def log(self, content, end='\n'):
+    def title(self, content, end='\n'):
         self.config(state=tk.NORMAL)
-        self.insert(tk.END, content+end)
+        self.insert(tk.END, content+end, 'TITLE')
+        self.see(tk.END)
+        self.config(state=tk.DISABLED)
+    
+    def log(self, content, end='\n'):  # the name 'info' is not allowed
+        self.config(state=tk.NORMAL)
+        self.insert(tk.END, content+end, 'INFO')
         self.see(tk.END)
         self.config(state=tk.DISABLED)
 
+    def debug(self, content, end='\n'):
+        self.config(state=tk.NORMAL)
+        self.insert(tk.END, content+end, 'DEBUG')
+        self.see(tk.END)
+        self.config(state=tk.DISABLED)
+    
     def warning(self, content, end='\n'):
         self.config(state=tk.NORMAL)
-        self.insert(tk.END, content+end, 'blue')
+        self.insert(tk.END, content+end, 'WARNING')
         self.see(tk.END)
         self.config(state=tk.DISABLED)
         
     def error(self, content, end='\n'):
         self.config(state=tk.NORMAL)
-        self.insert(tk.END, content+end, 'red')
+        self.insert(tk.END, content+end, 'ERROR')
         self.see(tk.END)
         self.config(state=tk.DISABLED)
 
+    def critical(self, content, end='\n'):
+        self.config(state=tk.NORMAL)
+        self.insert(tk.END, content+end, 'CRITICAL')
+        self.see(tk.END)
+        self.config(state=tk.DISABLED)
+    
     def _lineUp(self, event):
         self.yview('scroll', -1, 'units')
          
@@ -100,7 +119,7 @@ class winlog():
         self.win.attributes('-alpha', 1.0)
 
     def _focusOut(self, event):
-        self.win.attributes('-alpha', 0.6)
+        self.win.attributes('-alpha', 0.7)
 
     def _pin(self):
         if self.pin == 0:
@@ -112,48 +131,65 @@ class winlog():
             self.pin = 0
             self.top['text'] = 'Pin'
 
+    def title(self, content, end='\n'):
+        self.st.title(content, end)
+    
     def log(self, content, end='\n'):
         self.st.log(content, end)
 
+    def debug(self, content, end='\n'):
+        self.st.debug(content, end)
+    
     def warning(self, content, end='\n'):
         self.st.warning(content, end)
 
     def error(self, content, end='\n'):
         self.st.error(content, end)
 
+    def critical(self, content, end='\n'):
+        self.st.critical(content, end)
+    
     def destroy(self):
         self.win.destroy()
 
 
 if __name__ == '__main__':  # test code
+    import textwrap
     root = tk.Tk()
+    root.title('tklog class show')
+    # tklog class show
     eblog = tklog(master=root)
     eblog.pack()
-    eblog.log('this log text widget is created by tklog class')
-    eblog.log('I am on root window')
+    eblog.log(textwrap.dedent("""\
+              This log widget in root window is created by tklog class.
+              Suppose we have code below:
+              >>> from tklog import tklog
+              >>> root = tk.Tk()
+              >>> eblog = tklog(master=root)
+              # now we can call methods of eblog object"""))
+    eblog.log('>>> eblog.title(\'this is title\')')
+    eblog.title('this is title')
+    eblog.log('>>> eblog.log(\'this is log\')')
     eblog.log('this is log')
+    eblog.log('>>> eblog.debug(\'this is debug\')')
+    eblog.debug('this is debug')
+    eblog.log('>>> eblog.warning(\'this is warning\')')
     eblog.warning('this is warning')
+    eblog.log('>>> eblog.error(\'this is error\')')
     eblog.error('this is error')
-    wlog = winlog(root, 'test winlog class')
-    wlog.log('this modaless log window is created by winlog class')
-    wlog.log('I am a modaless window based on root')
-    wlog.log('this is log')
-    wlog.warning('this is warning')
-    wlog.error('this is error')
-    import textwrap
+    eblog.log('>>> eblog.critical(\'this is critical\')')
+    eblog.critical('this is critical')
+    # winlog class show
+    wlog = winlog(root, 'winlog class show')
+    wlog.title('winlog class intro:')
     wlog.log(textwrap.dedent("""\
-    In these objects, click right button of your mouse, you can get two 
-    useful options, Export all to file and Copy to clipboard. 
-    The text area will always be readonly, you don't need to worry that 
-    log info would be broken by any reasons. Have fun...
-    
-    Please don't save your star:
-    https://github.com/xinlin-z/tklog
-
-    welcome to my blogs:
-    https://www.pynote.net
-    https://www.maixj.net
-    """))
+            This modaless log window is created by winlog class, which is 
+            inherited from tklog class. So it has almost the same methods,
+            except that it is floated."""))
+    wlog.debug('debug info')
+    wlog.warning('warning info')
+    wlog.error('error info')
+    wlog.critical('critical info')
     root.mainloop()
 
 
