@@ -24,7 +24,7 @@ class tklog(ScrolledText):
         self.bind('<Button-1>', self._popdown)
         self.bind('<Up>', self._lineUp)
         self.bind('<Down>', self._lineDown)
-        self.pngList = []
+        self.pList = []
 
     def _popup(self, event):
         self.rpop.post(event.x_root, event.y_root)
@@ -86,13 +86,22 @@ class tklog(ScrolledText):
 
     def png(self, pngFile):
         try:
-            self.pngList.append(PhotoImage(file=pngFile))
+            self.pList.append(PhotoImage(file=pngFile))
             self.image_create(tk.END, 
-                              image=self.pngList[len(self.pngList)-1])
-            self.log('\n', end='')
+                              image=self.pList[len(self.pList)-1])
+            self.log('')
         except Exception as e: 
             self.debug(repr(e))
     
+    def gif(self, gifFile):
+        try:
+            self.pList.append(PhotoImage(file=gifFile))
+            self.image_create(tk.END, 
+                              image=self.pList[len(self.pList)-1])
+            self.log('')
+        except Exception as e: 
+            self.debug(repr(e))
+
     def _lineUp(self, event):
         self.yview('scroll', -1, 'units')
          
@@ -161,6 +170,9 @@ class winlog():
     def png(self, pngFile):
         self.st.png(pngFile)
     
+    def gif(self, gifFile):
+        self.st.gif(gifFile)
+
     def destroy(self):
         self.win.destroy()
 
@@ -194,6 +206,9 @@ if __name__ == '__main__':  # test code
     eblog.critical('this is critical')
     eblog.log('>>> eblog.png(\'./pynote.net.png\')')
     eblog.png('pynote.net.png')
+    eblog.log('>>> eblog.gif(\'./funny.gif\')')
+    eblog.gif('funny.gif')
+    eblog.warning('gif cannot move is a known issue!')
     eblog.title('Have fun...')
     # winlog class show
     wlog = winlog(root, 'winlog class show')
@@ -207,6 +222,7 @@ if __name__ == '__main__':  # test code
     wlog.error('error info')
     wlog.critical('critical info')
     wlog.png('pynote.net.png')
+    wlog.gif('funny.gif')
     wlog.title('Have fun...')
     root.mainloop()
 
