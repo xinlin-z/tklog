@@ -111,6 +111,7 @@ class tklog(ScrolledText):
     def clean(self):
         self.config(state=tk.NORMAL)
         self.delete('1.0', tk.END)
+        self.pList.clear()
         self.config(state=tk.DISABLED)
 
 
