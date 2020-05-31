@@ -19,7 +19,7 @@ class tklog(ScrolledText):
         self.rpop = tk.Menu(self, tearoff=0)
         self.rpop.add_command(label='Export', command=self._copyas)
         self.rpop.add_command(label='Copy', command=self._copyto)
-        self.rpop.add_command(label='Clean', command=self.clean) 
+        self.rpop.add_command(label='Clean', command=self.clean)
         self.bind('<Button-3>', self._popup)
         self.bind('<Button-1>', self._popdown)
         self.bind('<Up>', self._lineUp)
@@ -48,63 +48,53 @@ class tklog(ScrolledText):
             pass  # skip TclError while no selection
         else: self.clipboard_append(selection)
 
+    def _log(self, level, content, end):
+        self.config(state=tk.NORMAL)
+        self.insert(tk.END, content+end, level)
+        self.see(tk.END)
+        self.config(state=tk.DISABLED)
+
     def title(self, content, end='\n'):
-        self.config(state=tk.NORMAL)
-        self.insert(tk.END, content+end, 'TITLE')
-        self.see(tk.END)
-        self.config(state=tk.DISABLED)
-    
-    def log(self, content, end='\n'):  # the name 'info' is not allowed
-        self.config(state=tk.NORMAL)
-        self.insert(tk.END, content+end, 'INFO')
-        self.see(tk.END)
-        self.config(state=tk.DISABLED)
+        self._log('TITLE', content, end)
+
+    def info(self, content, end='\n'):
+        self._log('INFO', content, end)
+
+    log = info
 
     def debug(self, content, end='\n'):
-        self.config(state=tk.NORMAL)
-        self.insert(tk.END, content+end, 'DEBUG')
-        self.see(tk.END)
-        self.config(state=tk.DISABLED)
-    
+        self._log('DEBUG', content, end)
+
     def warning(self, content, end='\n'):
-        self.config(state=tk.NORMAL)
-        self.insert(tk.END, content+end, 'WARNING')
-        self.see(tk.END)
-        self.config(state=tk.DISABLED)
-        
+        self._log('WARNING', content, end)
+
     def error(self, content, end='\n'):
-        self.config(state=tk.NORMAL)
-        self.insert(tk.END, content+end, 'ERROR')
-        self.see(tk.END)
-        self.config(state=tk.DISABLED)
+        self._log('ERROR', content, end)
 
     def critical(self, content, end='\n'):
-        self.config(state=tk.NORMAL)
-        self.insert(tk.END, content+end, 'CRITICAL')
-        self.see(tk.END)
-        self.config(state=tk.DISABLED)
+        self._log('CRITICAL', content, end)
 
     def png(self, pngFile):
         try:
             self.pList.append(PhotoImage(file=pngFile))
-            self.image_create(tk.END, 
+            self.image_create(tk.END,
                               image=self.pList[len(self.pList)-1])
             self.log('')
-        except Exception as e: 
+        except Exception as e:
             self.debug(repr(e))
-    
+
     def gif(self, gifFile):
         try:
             self.pList.append(PhotoImage(file=gifFile))
-            self.image_create(tk.END, 
+            self.image_create(tk.END,
                               image=self.pList[len(self.pList)-1])
             self.log('')
-        except Exception as e: 
+        except Exception as e:
             self.debug(repr(e))
 
     def _lineUp(self, event):
         self.yview('scroll', -1, 'units')
-         
+
     def _lineDown(self, event):
         self.yview('scroll', 1, 'units')
 
@@ -152,13 +142,15 @@ class winlog():
 
     def title(self, content, end='\n'):
         self.st.title(content, end)
-    
-    def log(self, content, end='\n'):
+
+    def info(self, content, end='\n'):
         self.st.log(content, end)
+
+    log = info
 
     def debug(self, content, end='\n'):
         self.st.debug(content, end)
-    
+
     def warning(self, content, end='\n'):
         self.st.warning(content, end)
 
@@ -170,7 +162,7 @@ class winlog():
 
     def png(self, pngFile):
         self.st.png(pngFile)
-    
+
     def gif(self, gifFile):
         self.st.gif(gifFile)
 
@@ -215,7 +207,7 @@ if __name__ == '__main__':  # test code
     wlog = winlog(root, 'winlog class show')
     wlog.title('winlog class intro:')
     wlog.log(textwrap.dedent("""\
-            This modaless log window is created by winlog class, which is 
+            This modaless log window is created by winlog class, which is
             inherited from tklog class. So it has almost the same methods,
             except that it is floated."""))
     wlog.debug('debug info')
