@@ -108,7 +108,7 @@ class tklog(ScrolledText):
 class winlog():
     """readonly modaless Toplevel log window class"""
 
-    def __init__(self, root=None, title='Log Window'):
+    def __init__(self, root, title='Log Window'):
         self.win = Toplevel(root)
         self.win.title(title)
         self.win.geometry('800x600')
