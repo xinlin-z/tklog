@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import Toplevel, PhotoImage
 from tkinter.scrolledtext import ScrolledText
 from tkinter.filedialog import asksaveasfilename
+import logging
 
 
 class tklog(ScrolledText):
@@ -60,6 +61,7 @@ class tklog(ScrolledText):
     def info(self, content, end='\n'):
         self._log('INFO', content, end)
 
+    # directly call info will raise, why?
     log = info
 
     def debug(self, content, end='\n'):
@@ -103,6 +105,35 @@ class tklog(ScrolledText):
         self.delete('1.0', tk.END)
         self.pList.clear()
         self.config(state=tk.DISABLED)
+
+
+class tklogHandler(logging.Handler):
+    """tklog handler inherited from logging.Handler"""
+
+    def __init__(self, **kw):
+        logging.Handler.__init__(self)
+        self.tklog = tklog(**kw)
+
+    def emit(self, record):
+        if record.levelno== logging.DEBUG:
+            self.tklog.debug(self.format(record))
+        if record.levelno== logging.INFO:
+            self.tklog.log(self.format(record))
+        if record.levelno== logging.WARNING:
+            self.tklog.warning(self.format(record))
+        if record.levelno== logging.ERROR:
+            self.tklog.error(self.format(record))
+        if record.levelno== logging.CRITICAL:
+            self.tklog.critical(self.format(record))
+
+    def title(self, msg):
+        self.tklog.title(msg)
+
+    def pack(self, **kw):
+        self.tklog.pack(**kw)
+
+    def grid(self, **kw):
+        self.tklog.grid(**kw)
 
 
 class winlog():
@@ -176,7 +207,7 @@ if __name__ == '__main__':  # test code
     root.title('tklog class show')
     # tklog class show
     eblog = tklog(master=root)
-    eblog.pack(fill='both', expand=True)
+    eblog.pack(fill='both', expand=True, side=tk.LEFT)
     eblog.log(textwrap.dedent("""\
               This log widget in root window is created by tklog class.
               Suppose we have code below:
@@ -203,6 +234,20 @@ if __name__ == '__main__':  # test code
     eblog.gif('funny.gif')
     eblog.warning('gif cannot move is a known issue!')
     eblog.title('Have fun...')
+    # tklogHandler
+    logger = logging.getLogger(__name__)
+    logger.setLevel(logging.DEBUG)
+    fmt = logging.Formatter('%(asctime)s: %(message)s')
+    tkhandler = tklogHandler(master=root)
+    tkhandler.pack(fill='both', expand=True, side=tk.RIGHT)
+    tkhandler.setFormatter(fmt)
+    logger.addHandler(tkhandler)
+    logger.debug('this is debug')
+    logger.info('this is info')
+    logger.warning('this is warning')
+    logger.error('this is error')
+    logger.critical('this is critical')
+    tkhandler.title('this is title, can only be called by tklogHandler.')
     # winlog class show
     wlog = winlog(root, 'winlog class show')
     wlog.title('winlog class intro:')
