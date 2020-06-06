@@ -129,6 +129,12 @@ class tklogHandler(logging.Handler):
     def title(self, msg):
         self.tklog.title(msg)
 
+    def png(self, pngFile):
+        self.tklog.png(pngFile)
+
+    def gif(self, gifFile):
+        self.tklog.gif(gifFile)
+
     def pack(self, **kw):
         self.tklog.pack(**kw)
 
@@ -247,7 +253,12 @@ if __name__ == '__main__':  # test code
     logger.warning('this is warning')
     logger.error('this is error')
     logger.critical('this is critical')
-    tkhandler.title('this is title, can only be called by tklogHandler.')
+    logger.title = tkhandler.title
+    logger.png = tkhandler.png
+    logger.gif = tkhandler.gif
+    logger.title('this is title, can only be called by tklogHandler.')
+    logger.png('pynote.net.png')
+    logger.gif('funny.gif')
     # winlog class show
     wlog = winlog(root, 'winlog class show')
     wlog.title('winlog class intro:')
