@@ -55,9 +55,9 @@ class tklog(ScrolledText):
         self.mutex.acquire()
         self.config(state=tk.NORMAL)
         self.insert(tk.END, content+end, level)
-        self.see(tk.END)
         self.config(state=tk.DISABLED)
         self.mutex.release()
+        self.see(tk.END)
 
     def title(self, content, end='\n'):
         self._log('TITLE', content, end)
