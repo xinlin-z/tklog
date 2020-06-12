@@ -26,7 +26,7 @@ class tklog(ScrolledText):
         self.bind('<Button-1>', self._popdown)
         self.bind('<Up>', self._lineUp)
         self.bind('<Down>', self._lineDown)
-        self.mutex = threading.Lock()
+        self.mutex = threading.RLock()
         self.pList = []
 
     def _popup(self, event):
@@ -82,21 +82,27 @@ class tklog(ScrolledText):
 
     def png(self, pngFile):
         try:
+            self.mutex.acquire()
             self.pList.append(PhotoImage(file=pngFile))
             self.image_create(tk.END,
                               image=self.pList[len(self.pList)-1])
             self.log('')
         except Exception as e:
             self.debug(repr(e))
+        finally:
+            self.mutex.release()
 
     def gif(self, gifFile):
         try:
+            self.mutex.acquire()
             self.pList.append(PhotoImage(file=gifFile))
             self.image_create(tk.END,
                               image=self.pList[len(self.pList)-1])
             self.log('')
         except Exception as e:
             self.debug(repr(e))
+        finally:
+            self.mutex.release()
 
     def _lineUp(self, event):
         self.yview('scroll', -1, 'units')
