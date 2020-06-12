@@ -3,6 +3,7 @@ from tkinter import Toplevel, PhotoImage
 from tkinter.scrolledtext import ScrolledText
 from tkinter.filedialog import asksaveasfilename
 import logging
+import threading
 
 
 class tklog(ScrolledText):
@@ -25,6 +26,7 @@ class tklog(ScrolledText):
         self.bind('<Button-1>', self._popdown)
         self.bind('<Up>', self._lineUp)
         self.bind('<Down>', self._lineDown)
+        self.mutex = threading.Lock()
         self.pList = []
 
     def _popup(self, event):
@@ -50,10 +52,12 @@ class tklog(ScrolledText):
         else: self.clipboard_append(selection)
 
     def _log(self, level, content, end):
+        self.mutex.acquire()
         self.config(state=tk.NORMAL)
         self.insert(tk.END, content+end, level)
         self.see(tk.END)
         self.config(state=tk.DISABLED)
+        self.mutex.release()
 
     def title(self, content, end='\n'):
         self._log('TITLE', content, end)
