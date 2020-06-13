@@ -26,6 +26,7 @@ class tklog(ScrolledText):
         self.bind('<Button-1>', self._popdown)
         self.bind('<Up>', self._lineUp)
         self.bind('<Down>', self._lineDown)
+        # png and gif interface need call _log, so use RLock
         self.mutex = threading.RLock()
         self.pList = []
 
@@ -155,7 +156,11 @@ class tklogHandler(logging.Handler):
 class winlog():
     """readonly modaless Toplevel log window class"""
 
-    def __init__(self, root, title='Log Window'):
+    def __init__(self, root, title='Log Window', withdrawRoot=True,
+                    destroyRoot=True):
+        self.root = root
+        if withdrawRoot:
+            self.root.withdraw()
         self.win = Toplevel(root)
         self.win.title(title)
         self.win.geometry('800x600')
@@ -170,6 +175,8 @@ class winlog():
         self.win.bind('<FocusIn>', self._focusIn)
         self.win.bind('<FocusOut>', self._focusOut)
         self.pin = 0  # default is unpinned
+        self.win.protocol('WM_DELETE_WINDOW', self.destroy)
+        self.destroyRoot = destroyRoot
 
     def _focusIn(self, event):
         self.win.attributes('-alpha', 1.0)
@@ -215,74 +222,9 @@ class winlog():
 
     def destroy(self):
         self.win.destroy()
+        if self.destroyRoot:
+            self.root.destroy()
 
 
-if __name__ == '__main__':  # test code
-    import textwrap
-    root = tk.Tk()
-    root.title('tklog class show')
-    # tklog class show
-    eblog = tklog(master=root)
-    eblog.pack(fill='both', expand=True, side=tk.LEFT)
-    eblog.log(textwrap.dedent("""\
-              This log widget in root window is created by tklog class.
-              Suppose we have code below:
-              >>> from tklog import tklog
-              >>> root = tk.Tk()
-              >>> eblog = tklog(master=root)
-              >>> eblog.pack()
-              # now we can call methods of eblog object"""))
-    eblog.log('>>> eblog.title(\'this is title\')')
-    eblog.title('this is title')
-    eblog.log('>>> eblog.log(\'this is log\')')
-    eblog.log('this is log')
-    eblog.log('>>> eblog.debug(\'this is debug\')')
-    eblog.debug('this is debug')
-    eblog.log('>>> eblog.warning(\'this is warning\')')
-    eblog.warning('this is warning')
-    eblog.log('>>> eblog.error(\'this is error\')')
-    eblog.error('this is error')
-    eblog.log('>>> eblog.critical(\'this is critical\')')
-    eblog.critical('this is critical')
-    eblog.log('>>> eblog.png(\'./pynote.net.png\')')
-    eblog.png('pynote.net.png')
-    eblog.log('>>> eblog.gif(\'./funny.gif\')')
-    eblog.gif('funny.gif')
-    eblog.warning('gif cannot move is a known issue!')
-    eblog.title('Have fun...')
-    # tklogHandler
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging.DEBUG)
-    fmt = logging.Formatter('%(asctime)s: %(message)s')
-    tkhandler = tklogHandler(master=root)
-    tkhandler.pack(fill='both', expand=True, side=tk.RIGHT)
-    tkhandler.setFormatter(fmt)
-    logger.addHandler(tkhandler)
-    logger.debug('this is debug')
-    logger.info('this is info')
-    logger.warning('this is warning')
-    logger.error('this is error')
-    logger.critical('this is critical')
-    logger.title = tkhandler.title
-    logger.png = tkhandler.png
-    logger.gif = tkhandler.gif
-    logger.title('this is title, can only be called by tklogHandler.')
-    logger.png('pynote.net.png')
-    logger.gif('funny.gif')
-    # winlog class show
-    wlog = winlog(root, 'winlog class show')
-    wlog.title('winlog class intro:')
-    wlog.log(textwrap.dedent("""\
-            This modaless log window is created by winlog class, which is
-            inherited from tklog class. So it has almost the same methods,
-            except that it is floated."""))
-    wlog.debug('debug info')
-    wlog.warning('warning info')
-    wlog.error('error info')
-    wlog.critical('critical info')
-    wlog.png('pynote.net.png')
-    wlog.gif('funny.gif')
-    wlog.title('Have fun...')
-    root.mainloop()
 
 
