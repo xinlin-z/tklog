@@ -226,5 +226,32 @@ class winlog():
             self.root.destroy()
 
 
+class winlogHandler(logging.Handler):
+    """winlog handler inherited from logging.Handler"""
+
+    def __init__(self, **kw):
+        logging.Handler.__init__(self)
+        self.winlog = winlog(**kw)
+
+    def emit(self, record):
+        if record.levelno== logging.DEBUG:
+            self.winlog.debug(self.format(record))
+        if record.levelno== logging.INFO:
+            self.winlog.log(self.format(record))
+        if record.levelno== logging.WARNING:
+            self.winlog.warning(self.format(record))
+        if record.levelno== logging.ERROR:
+            self.winlog.error(self.format(record))
+        if record.levelno== logging.CRITICAL:
+            self.winlog.critical(self.format(record))
+
+    def title(self, msg):
+        self.winlog.title(msg)
+
+    def png(self, pngFile):
+        self.winlog.png(pngFile)
+
+    def gif(self, gifFile):
+        self.winlog.gif(gifFile)
 
 
