@@ -22,6 +22,10 @@ class tklog(ScrolledText):
         self.rpop.add_command(label='Export', command=self._copyas)
         self.rpop.add_command(label='Copy', command=self._copyto)
         self.rpop.add_command(label='Clean', command=self.clean)
+        self.autoscroll = tk.IntVar(value=1)
+        self.rpop.add_checkbutton(label='Autoscrolling',
+                                  command=None,
+                                  variable=self.autoscroll)
         self.bind('<Button-3>', self._popup)
         self.bind('<Button-1>', self._popdown)
         self.bind('<Up>', self._lineUp)
@@ -58,7 +62,8 @@ class tklog(ScrolledText):
         self.insert(tk.END, content+end, level)
         self.config(state=tk.DISABLED)
         self.mutex.release()
-        self.see(tk.END)
+        if self.autoscroll.get() == 1:
+            self.see(tk.END)
 
     def title(self, content, end='\n'):
         self._log('TITLE', content, end)
