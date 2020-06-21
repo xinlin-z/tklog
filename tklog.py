@@ -4,6 +4,7 @@ from tkinter.scrolledtext import ScrolledText
 from tkinter.filedialog import asksaveasfilename
 import logging
 import threading
+import queue
 
 
 class tklog(ScrolledText):
@@ -30,9 +31,17 @@ class tklog(ScrolledText):
         self.bind('<Button-1>', self._popdown)
         self.bind('<Up>', self._lineUp)
         self.bind('<Down>', self._lineDown)
-        # png and gif interface need call _log, so use RLock
-        self.mutex = threading.RLock()
         self.pList = []
+        self.q = queue.Queue()
+        self.stop = 0
+        self.wt = threading.Thread(target=self._writer,
+                                   args=(), daemon=True)
+        self.wt.start()
+
+    def destroy(self):
+        self.stop = 1
+        self.q.put(None)  # q.get is blocked, so we need put sth.
+        ScrolledText.destroy(self)
 
     def _popup(self, event):
         self.rpop.post(event.x_root, event.y_root)
@@ -56,14 +65,37 @@ class tklog(ScrolledText):
             pass  # skip TclError while no selection
         else: self.clipboard_append(selection)
 
+    def _writer(self):
+        while True:
+            info = self.q.get()
+            if self.stop: break
+            try:
+                self.config(state=tk.NORMAL)
+                pos = info[:9].find('@')
+                if pos == -1:
+                    self.insert(tk.END, '[undefined format]: '+info)
+                else:
+                    if info[:pos] == 'CLEAN':
+                        self.delete('1.0', tk.END)
+                    elif info[:pos] == 'PNG' or info[:pos] == 'GIF':
+                        try:
+                            self.pList.append(PhotoImage(file=info[pos+1:]))
+                            self.image_create(
+                                    tk.END,
+                                    image=self.pList[len(self.pList)-1])
+                            self.insert(tk.END, '\n', 'DEBUG')
+                        except Exception as e:
+                            self.insert(tk.END, repr(e)+'\n', 'DEBUG')
+                    else:
+                        self.insert(tk.END, info[pos+1:], info[:pos])
+                self.config(state=tk.DISABLED)
+                if self.autoscroll.get() == 1:
+                    self.see(tk.END)
+            except tk.TclError:
+                break
+
     def _log(self, level, content, end):
-        self.mutex.acquire()
-        self.config(state=tk.NORMAL)
-        self.insert(tk.END, content+end, level)
-        self.config(state=tk.DISABLED)
-        self.mutex.release()
-        if self.autoscroll.get() == 1:
-            self.see(tk.END)
+        self.q.put(level+'@'+content+end)
 
     def title(self, content, end='\n'):
         self._log('TITLE', content, end)
@@ -87,28 +119,10 @@ class tklog(ScrolledText):
         self._log('CRITICAL', content, end)
 
     def png(self, pngFile):
-        try:
-            self.mutex.acquire()
-            self.pList.append(PhotoImage(file=pngFile))
-            self.image_create(tk.END,
-                              image=self.pList[len(self.pList)-1])
-            self.log('')
-        except Exception as e:
-            self.debug(repr(e))
-        finally:
-            self.mutex.release()
+        self.q.put('PNG@'+pngFile)
 
     def gif(self, gifFile):
-        try:
-            self.mutex.acquire()
-            self.pList.append(PhotoImage(file=gifFile))
-            self.image_create(tk.END,
-                              image=self.pList[len(self.pList)-1])
-            self.log('')
-        except Exception as e:
-            self.debug(repr(e))
-        finally:
-            self.mutex.release()
+        self.q.put('GIF@'+gifFile)
 
     def _lineUp(self, event):
         self.yview('scroll', -1, 'units')
@@ -117,10 +131,7 @@ class tklog(ScrolledText):
         self.yview('scroll', 1, 'units')
 
     def clean(self):
-        self.config(state=tk.NORMAL)
-        self.delete('1.0', tk.END)
-        self.pList.clear()
-        self.config(state=tk.DISABLED)
+        self.q.put('CLEAN@')
 
 
 class tklogHandler(logging.Handler):
@@ -168,7 +179,7 @@ class winlog():
             self.root.withdraw()
         self.win = Toplevel(root)
         self.win.title(title)
-        self.win.geometry('800x600')
+        self.win.geometry('600x800')
         self.frame_0 = tk.Frame(self.win)
         self.frame_0.pack(fill='both', expand=True)
         self.st = tklog(master=self.frame_0, height=0)

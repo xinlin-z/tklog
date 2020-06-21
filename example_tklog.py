@@ -1,6 +1,15 @@
 import tkinter as tk
 from tklog import tklog
 import textwrap
+import time
+import threading
+
+
+def _poster(log):
+    while True:
+        log.log(time.strftime('%Y-%m-%d %H:%M:%S %A'))
+        log.debug('test autoscrolling option')
+        time.sleep(2)
 
 
 if __name__ == '__main__':  # test code
@@ -36,5 +45,9 @@ if __name__ == '__main__':  # test code
     eblog.gif('funny.gif')
     eblog.warning('gif cannot move is a known issue!')
     eblog.title('Have fun...')
+    eblog.png('test_not_existed_pic.png')
+    eblog.gif('test_not_existed_pic.gif')
+    t = threading.Thread(target=_poster, args=(eblog,), daemon=True)
+    t.start()
     root.mainloop()
 
