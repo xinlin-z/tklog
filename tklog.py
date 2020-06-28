@@ -7,6 +7,13 @@ import threading
 import queue
 
 
+# when too many threads put info in the queue, and there is only one
+# thread to get and dispaly, a lot of info maybe stocked in the queue,
+# and it needs so much time to get and display them all. So, set a length
+# to the queue to slow down all the crazy threads.
+QUEUE_LEN = 128
+
+
 class tklog(ScrolledText):
     """readonly scrolled text log class"""
 
@@ -32,7 +39,7 @@ class tklog(ScrolledText):
         self.bind('<Up>', self._lineUp)
         self.bind('<Down>', self._lineDown)
         self.pList = []
-        self.q = queue.Queue()
+        self.q = queue.Queue(QUEUE_LEN)
         self.stop = 0
         self.wt = threading.Thread(target=self._writer,
                                    args=(), daemon=True)
