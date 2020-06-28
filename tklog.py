@@ -77,25 +77,33 @@ class tklog(ScrolledText):
             info = self.q.get()
             if self.stop: break
             try:
-                self.config(state=tk.NORMAL)
                 pos = info[:9].find('@')
                 if pos == -1:
+                    self.config(state=tk.NORMAL)
                     self.insert(tk.END, '[undefined format]: '+info)
+                    self.config(state=tk.DISABLED)
                 else:
                     if info[:pos] == 'CLEAN':
+                        self.config(state=tk.NORMAL)
                         self.delete('1.0', tk.END)
+                        self.config(state=tk.DISABLED)
                     elif info[:pos] == 'PNG' or info[:pos] == 'GIF':
                         try:
                             self.pList.append(PhotoImage(file=info[pos+1:]))
+                            self.config(state=tk.NORMAL)
                             self.image_create(
                                     tk.END,
                                     image=self.pList[len(self.pList)-1])
                             self.insert(tk.END, '\n', 'DEBUG')
+                            self.config(state=tk.DISABLED)
                         except Exception as e:
+                            self.config(state=tk.NORMAL)
                             self.insert(tk.END, repr(e)+'\n', 'DEBUG')
+                            self.config(state=tk.DISABLED)
                     else:
+                        self.config(state=tk.NORMAL)
                         self.insert(tk.END, info[pos+1:], info[:pos])
-                self.config(state=tk.DISABLED)
+                        self.config(state=tk.DISABLED)
                 if self.autoscroll.get() == 1:
                     self.see(tk.END)
             except tk.TclError:
