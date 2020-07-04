@@ -48,7 +48,6 @@ class tklog(ScrolledText):
     def destroy(self):
         self.stop = 1
         self.q.put(None)  # q.get is blocked, so we need put sth.
-        ScrolledText.destroy(self)
 
     def _popup(self, event):
         self.rpop.post(event.x_root, event.y_root)
