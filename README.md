@@ -20,8 +20,8 @@ There are four classes in tklog.py:
 
 There are also four example code files for the four above classes.
 
-Please run and check the code before enjoying the classes form tklog, and 
-don't forget to try **right click** on the log area. Maybe it's a surprise
+Please run and check the example code before enjoying the classes form tklog, 
+anddon't forget to try **right click** on the log area. Maybe it's a surprise
 for you.
 
     $python3 example_tklog.py
