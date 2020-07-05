@@ -5,7 +5,7 @@ from tklog import winlog
 
 if __name__ == '__main__':
     root = tk.Tk()
-    wlog = winlog(root, 'winlog class show')
+    wlog = winlog(root, 'winlog class show', True, True)
     wlog.title('winlog class intro:')
     wlog.log(textwrap.dedent("""\
             This modaless log window is created by winlog class, which is

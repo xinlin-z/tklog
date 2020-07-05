@@ -186,8 +186,8 @@ class tklogHandler(logging.Handler):
 class winlog():
     """readonly modaless Toplevel log window class"""
 
-    def __init__(self, root, title='Log Window', withdrawRoot=True,
-                    destroyRoot=True):
+    def __init__(self, root, title='Log Window', withdrawRoot=False,
+                    destroyRoot=False):
         self.root = root
         if withdrawRoot:
             self.root.withdraw()

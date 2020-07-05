@@ -8,7 +8,10 @@ if __name__ == '__main__':
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.DEBUG)
     fmt = logging.Formatter('%(asctime)s: %(message)s')
-    winhandler = winlogHandler(root=root, title='winlogHandler class show')
+    winhandler = winlogHandler(root=root,
+                               title='winlogHandler class show',
+                               withdrawRoot=True,
+                               destroyRoot=True)
     winhandler.setFormatter(fmt)
     logger.addHandler(winhandler)
     logger.debug('this is debug')
