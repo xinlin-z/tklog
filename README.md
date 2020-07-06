@@ -18,11 +18,11 @@ There are four classes in tklog.py:
 * **winlogHandler** class, which is inherited from logging.Handler and
   contains a winlog.
 
-There are also four example code files for the four above classes.
+There are also four example code files for these classes.
 
 Please run and check the example code before enjoying the classes from tklog, 
-anddon't forget to try **right click** on the log area. Maybe it's a surprise
-for you.
+and don't forget to try **right click** on the log area. Maybe it's a surprise
+for you. All the classes are **thread-safe**!
 
     $python3 example_tklog.py
     $python3 example_tklogHandler.py
