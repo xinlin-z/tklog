@@ -7,11 +7,15 @@ import threading
 import queue
 
 
-# when too many threads put info in the queue, and there is only one
-# thread to get and dispaly, a lot of info maybe stocked in the queue,
-# and it needs so much time to get and display them all. So, set a length
+# When too many threads put info in the queue, and there is only one
+# thread to get and consume, a lot of info maybe stocked in the queue,
+# and it needs so much time to get and consume them all. So, set a length
 # to the queue to slow down all the crazy threads.
-QUEUE_LEN = 128
+# But, there is another risk. If your GUI event handler put info directly,
+# without in a thread, your program might be deadlock if the queue is not
+# long enough.
+# So, to be a little balance in between, here we go:
+QUEUE_LEN = 2048
 
 
 class tklog(ScrolledText):
