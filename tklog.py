@@ -16,6 +16,7 @@ import queue
 # long enough.
 # So, to be a little balance in between, here we go:
 QUEUE_LEN = 2048
+# And, put method is set with block=False.
 
 
 class tklog(ScrolledText):
@@ -113,7 +114,7 @@ class tklog(ScrolledText):
                 break
 
     def _log(self, level, content, end):
-        self.q.put(level+'@'+content+end)
+        self.q.put(level+'@'+content+end, block=False)
 
     def title(self, content, end='\n'):
         self._log('TITLE', content, end)
@@ -137,10 +138,10 @@ class tklog(ScrolledText):
         self._log('CRITICAL', content, end)
 
     def png(self, pngFile):
-        self.q.put('PNG@'+pngFile)
+        self.q.put('PNG@'+pngFile, block=False)
 
     def gif(self, gifFile):
-        self.q.put('GIF@'+gifFile)
+        self.q.put('GIF@'+gifFile, block=False)
 
     def _lineUp(self, event):
         self.yview('scroll', -1, 'units')
@@ -149,7 +150,7 @@ class tklog(ScrolledText):
         self.yview('scroll', 1, 'units')
 
     def clean(self):
-        self.q.put('CLEAN@')
+        self.q.put('CLEAN@', block=False)
 
 
 class tklogHandler(logging.Handler):
