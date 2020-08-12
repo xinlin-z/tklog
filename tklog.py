@@ -28,7 +28,7 @@ class tklog(ScrolledText):
         self.tag_config('TITLE', foreground='blue')
         self.tag_config('INFO', foreground='black')
         self.tag_config('DEBUG', foreground='gray')
-        self.tag_config('WARNING', foreground='orange')
+        self.tag_config('WARNING', foreground='hotpink')
         self.tag_config('ERROR', foreground='red')
         self.tag_config('CRITICAL', foreground='red', underline=1)
         self.rpop = tk.Menu(self, tearoff=0)
