@@ -7,6 +7,9 @@ import threading
 import queue
 
 
+__version = 'V0.11'
+
+
 # When too many threads put info in the queue, and there is only one
 # thread to get and consume, a lot of info maybe stocked in the queue,
 # and it needs so much time to get and consume them all. So, set a length
@@ -39,6 +42,10 @@ class tklog(ScrolledText):
         self.rpop.add_checkbutton(label='Autoscrolling',
                                   command=None,
                                   variable=self.autoscroll)
+        self.editable = tk.IntVar(value=0)
+        self.rpop.add_checkbutton(label='Editable',
+                                  command=self._editable,
+                                  variable=self.editable)
         self.bind('<Button-3>', self._popup)
         self.bind('<Button-1>', self._popdown)
         self.bind('<Up>', self._lineUp)
@@ -76,6 +83,20 @@ class tklog(ScrolledText):
             pass  # skip TclError while no selection
         else: self.clipboard_append(selection)
 
+    def _editable(self):
+        if self.editable.get():
+            self.config(state=tk.NORMAL)
+        else:
+            self.config(state=tk.DISABLED)
+
+    def _chState(self, state):
+        if self.editable.get():
+            return
+        if state == 'on':
+            self.config(state=tk.NORMAL)
+        if state == 'off':
+            self.config(state=tk.DISABLED)
+
     def _writer(self):
         while True:
             info = self.q.get()
@@ -83,31 +104,31 @@ class tklog(ScrolledText):
             try:
                 pos = info[:9].find('@')
                 if pos == -1:
-                    self.config(state=tk.NORMAL)
+                    self._chState('on')
                     self.insert(tk.END, '[undefined format]: '+info)
-                    self.config(state=tk.DISABLED)
+                    self._chState('off')
                 else:
                     if info[:pos] == 'CLEAN':
-                        self.config(state=tk.NORMAL)
+                        self._chState('on')
                         self.delete('1.0', tk.END)
-                        self.config(state=tk.DISABLED)
+                        self._chState('off')
                     elif info[:pos] == 'PNG' or info[:pos] == 'GIF':
                         try:
                             self.pList.append(PhotoImage(file=info[pos+1:]))
-                            self.config(state=tk.NORMAL)
+                            self._chState('on')
                             self.image_create(
                                     tk.END,
                                     image=self.pList[len(self.pList)-1])
                             self.insert(tk.END, '\n', 'DEBUG')
-                            self.config(state=tk.DISABLED)
+                            self._chState('off')
                         except Exception as e:
-                            self.config(state=tk.NORMAL)
+                            self._chState('on')
                             self.insert(tk.END, repr(e)+'\n', 'DEBUG')
-                            self.config(state=tk.DISABLED)
+                            self._chState('off')
                     else:
-                        self.config(state=tk.NORMAL)
+                        self._chState('on')
                         self.insert(tk.END, info[pos+1:], info[:pos])
-                        self.config(state=tk.DISABLED)
+                        self._chState('off')
                 if self.autoscroll.get() == 1:
                     self.see(tk.END)
             except tk.TclError:
