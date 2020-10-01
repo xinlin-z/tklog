@@ -169,14 +169,10 @@ class tklog(ScrolledText):
         self._log('CRITICAL', content, end, sync)
 
     def png(self, pngFile, *, sync=False):
-        self.q.put('PNG@'+pngFile, block=False)
-        if sync:
-            self._syn_log()
+        self._log('PNG', pngFile, '', sync)
 
     def gif(self, gifFile, *, sync=False):
-        self.q.put('GIF@'+gifFile, block=False)
-        if sync:
-            self._syn_log()
+        self._log('GIF', gifFile, '', sync)
 
     def _lineUp(self, event):
         self.yview('scroll', -1, 'units')
