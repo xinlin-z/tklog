@@ -7,9 +7,11 @@ import threading
 
 def _poster(log):
     while True:
+        log.title('test sync log', sync=True)
         log.log(time.strftime('%Y-%m-%d %H:%M:%S %A'))
         log.debug('test autoscrolling option')
         time.sleep(2)
+        log.error('test sync log', sync=True)
 
 
 if __name__ == '__main__':  # test code

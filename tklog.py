@@ -7,7 +7,7 @@ import threading
 import queue
 
 
-__version = 'V0.11'
+__version = 'V0.12'
 
 
 # When too many threads put info in the queue, and there is only one
@@ -102,6 +102,9 @@ class tklog(ScrolledText):
             info = self.q.get()
             if self.stop: break
             try:
+                if isinstance(info, threading.Event):
+                    info.set()
+                    continue
                 pos = info[:9].find('@')
                 if pos == -1:
                     self._chState('on')
@@ -134,35 +137,46 @@ class tklog(ScrolledText):
             except tk.TclError:
                 break
 
-    def _log(self, level, content, end):
+    def _log(self, level, content, end, sync):
         self.q.put(level+'@'+content+end, block=False)
+        if sync:
+            self._syn_log()
 
-    def title(self, content, end='\n'):
-        self._log('TITLE', content, end)
+    def _syn_log(self):
+        wait2go = threading.Event()
+        self.q.put(wait2go, block=False)
+        wait2go.wait()
 
-    def info(self, content, end='\n'):
-        self._log('INFO', content, end)
+    def title(self, content, end='\n', *, sync=False):
+        self._log('TITLE', content, end, sync)
+
+    def info(self, content, end='\n', *, sync=False):
+        self._log('INFO', content, end, sync)
 
     # directly call info will raise, why?
     log = info
 
-    def debug(self, content, end='\n'):
-        self._log('DEBUG', content, end)
+    def debug(self, content, end='\n', *, sync=False):
+        self._log('DEBUG', content, end, sync)
 
-    def warning(self, content, end='\n'):
-        self._log('WARNING', content, end)
+    def warning(self, content, end='\n', *, sync=False):
+        self._log('WARNING', content, end, sync)
 
-    def error(self, content, end='\n'):
-        self._log('ERROR', content, end)
+    def error(self, content, end='\n', *, sync=False):
+        self._log('ERROR', content, end, sync)
 
-    def critical(self, content, end='\n'):
-        self._log('CRITICAL', content, end)
+    def critical(self, content, end='\n', *, sync=False):
+        self._log('CRITICAL', content, end, sync)
 
-    def png(self, pngFile):
+    def png(self, pngFile, *, sync=False):
         self.q.put('PNG@'+pngFile, block=False)
+        if sync:
+            self._syn_log()
 
-    def gif(self, gifFile):
+    def gif(self, gifFile, *, sync=False):
         self.q.put('GIF@'+gifFile, block=False)
+        if sync:
+            self._syn_log()
 
     def _lineUp(self, event):
         self.yview('scroll', -1, 'units')
