@@ -18,9 +18,15 @@ There are four classes in tklog.py:
 * **winlogHandler** class, which is inherited from logging.Handler and
   contains a winlog.
 
-There are also four example code files for these classes.
+There are also four piece of example code files for these classes.
 
-Please run and check the example code before enjoying the classes from tklog, 
+The log interface has an argument named sync from V0.12, default is False.
+You should be very careful about this argument, you can never use it in GUI
+event loop. Normally, sync=True should only be set in background thread which
+needs synchronization. For example, you want to make sure the log interface
+would be blocked until after the log info is shown on text window.
+
+Please run and check the example code before enjoying the classes from tklog,
 and don't forget to try **right click** on the log area. Maybe it's a surprise
 for you. All the classes are **thread-safe**!
 
@@ -31,5 +37,5 @@ for you. All the classes are **thread-safe**!
 
 **中文参考： https://www.pynote.net/archives/1207**
 
-Hope you like tklog and give me an encouraging **Star**. ^___^
+Hope you like tklog.
 

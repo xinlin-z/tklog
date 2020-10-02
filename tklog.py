@@ -10,6 +10,16 @@ import queue
 __version = 'V0.12'
 
 
+"""
+About the sync argument for log interfaces (added in V0.12):
+
+You should be VERY VERY careful to decide set sync=True, since it is very
+often cause dead lock. Normally, it only should be set in background
+thread which needs to log to GUI text windows.
+
+You can not set sync=True in the event loop of GUI!!
+"""
+
 # When too many threads put info in the queue, and there is only one
 # thread to get and consume, a lot of info maybe stocked in the queue,
 # and it needs so much time to get and consume them all. So, set a length
