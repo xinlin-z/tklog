@@ -1,6 +1,5 @@
 import tkinter as tk
 from tklog import tklog
-import textwrap
 import time
 import threading
 

@@ -37,7 +37,7 @@ class tklog(ScrolledText):
 
     def __init__(self, **kw):
         super().__init__(**kw, state=tk.DISABLED, cursor='plus',
-                               wrap=tk.WORD, font=('monospace',12))
+                         wrap=tk.WORD, font=('monospace',12))
         self.tag_config('TITLE', foreground='blue')
         self.tag_config('INFO', foreground='black')
         self.tag_config('DEBUG', foreground='gray')
@@ -89,7 +89,7 @@ class tklog(ScrolledText):
         self.clipboard_clear()
         try:
             selection = self.get(tk.SEL_FIRST, tk.SEL_LAST)
-        except:
+        except tk.TclError:
             pass  # skip TclError while no selection
         else: self.clipboard_append(selection)
 
@@ -130,8 +130,8 @@ class tklog(ScrolledText):
                             self.pList.append(PhotoImage(file=info[pos+1:]))
                             self._chState('on')
                             self.image_create(
-                                    tk.END,
-                                    image=self.pList[len(self.pList)-1])
+                                tk.END,
+                                image=self.pList[len(self.pList)-1])
                             self.insert(tk.END, '\n', 'DEBUG')
                             self._chState('off')
                         except Exception as e:
@@ -233,7 +233,7 @@ class winlog():
     """readonly modaless Toplevel log window class"""
 
     def __init__(self, root, title='Log Window', withdrawRoot=False,
-                    destroyRoot=False):
+                 destroyRoot=False):
         self.root = root
         if withdrawRoot:
             self.root.withdraw()
