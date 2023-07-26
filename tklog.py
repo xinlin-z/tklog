@@ -7,7 +7,7 @@ import threading
 import queue
 
 
-__version = 'V0.12'
+__version = 'V0.13'
 
 
 """
@@ -47,7 +47,7 @@ class tklog(ScrolledText):
         self.rpop = tk.Menu(self, tearoff=0)
         self.rpop.add_command(label='Export', command=self._copyas)
         self.rpop.add_command(label='Copy', command=self._copyto)
-        self.rpop.add_command(label='Clean', command=self.clean)
+        self.rpop.add_command(label='Clear', command=self.clear)
         self.autoscroll = tk.IntVar(value=1)
         self.rpop.add_checkbutton(label='Autoscrolling',
                                   command=None,
@@ -104,7 +104,7 @@ class tklog(ScrolledText):
             return
         if state == 'on':
             self.config(state=tk.NORMAL)
-        if state == 'off':
+        else:
             self.config(state=tk.DISABLED)
 
     def _writer(self):
@@ -121,7 +121,7 @@ class tklog(ScrolledText):
                     self.insert(tk.END, '[undefined format]: '+info)
                     self._chState('off')
                 else:
-                    if info[:pos] == 'CLEAN':
+                    if info[:pos] == 'CLEAR':
                         self._chState('on')
                         self.delete('1.0', tk.END)
                         self._chState('off')
@@ -129,9 +129,7 @@ class tklog(ScrolledText):
                         try:
                             self.pList.append(PhotoImage(file=info[pos+1:]))
                             self._chState('on')
-                            self.image_create(
-                                tk.END,
-                                image=self.pList[len(self.pList)-1])
+                            self.image_create(tk.END, image=self.pList[-1])
                             self.insert(tk.END, '\n', 'DEBUG')
                             self._chState('off')
                         except Exception as e:
@@ -190,8 +188,8 @@ class tklog(ScrolledText):
     def _lineDown(self, event):
         self.yview('scroll', 1, 'units')
 
-    def clean(self):
-        self.q.put('CLEAN@', block=False)
+    def clear(self):
+        self.q.put('CLEAR@', block=False)
 
 
 class tklogHandler(logging.Handler):
