@@ -114,6 +114,7 @@ class tklog(ScrolledText):
                     if info[:pos] == 'CLEAR':
                         self.delete('1.0', tk.END)
                         self.pList = []
+                        self.q.clear()
                     elif info[:pos] == 'PNG' or info[:pos] == 'GIF':
                         try:
                             self.pList.append(PhotoImage(file=info[pos+1:]))
