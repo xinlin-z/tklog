@@ -8,10 +8,29 @@ import random
 
 def _poster(log):
     while True:
-        r = random.randint(1,7)
+        r = random.randint(1,8)
+        log.log(time.strftime('%Y-%m-%d %H:%M:%S %A')
+                +' '+str(threading.get_ident()))
         if r == 1:
-            log.log('Test SYNC log..!!', sync=True)
-            log.log(time.strftime('%Y-%m-%d %H:%M:%S %A'))
+            c = random.randint(1,8)
+            if c == 1:
+                log.debug('Test SYNC log..!!', sync=True)
+            elif c == 2:
+                log.log('Test SYNC log..!!', sync=True)
+            elif c == 3:
+                log.warning('Test SYNC log..!!', sync=True)
+            elif c == 4:
+                log.error('Test SYNC log..!!', sync=True)
+            elif c == 5:
+                log.critical('Test SYNC log..!!', sync=True)
+            elif c == 6:
+                log.title('Test SYNC log..!!', sync=True)
+            elif c == 7:
+                log.debug('sync gif...')
+                log.gif('funny.gif', sync=True)
+            else:
+                log.debug('sync png...')
+                log.png('ty.png', sync=True)
         elif r == 2:
             log.debug('log is just like a cup of coffee!')
         elif r == 3:
@@ -20,12 +39,13 @@ def _poster(log):
             log.warning('Bad news: tomorrow is not weekend...')
         elif r == 5:
             log.title('he is always playing games...')
-            log.critical('this is a critical situation!')
         elif r == 6:
+            log.critical('this is a critical situation!')
+        elif r == 7:
             log.gif('funny.gif')
         else:
             log.png('ty.png')
-        time.sleep(7/r)
+        time.sleep(8/r)
 
 
 if __name__ == '__main__':  # test code

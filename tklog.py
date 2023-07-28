@@ -218,31 +218,31 @@ class winlog():
             self.pin = 0
             self.top['text'] = 'Pin'
 
-    def title(self, content, end='\n'):
-        self.st.title(content, end)
+    def title(self, content, end='\n', *, sync=False):
+        self.st.title(content, end, sync=sync)
 
-    def info(self, content, end='\n'):
-        self.st.log(content, end)
+    def info(self, content, end='\n', *, sync=False):
+        self.st.log(content, end, sync=sync)
 
     log = info
 
-    def debug(self, content, end='\n'):
-        self.st.debug(content, end)
+    def debug(self, content, end='\n', *, sync=False):
+        self.st.debug(content, end, sync=sync)
 
-    def warning(self, content, end='\n'):
-        self.st.warning(content, end)
+    def warning(self, content, end='\n', *, sync=False):
+        self.st.warning(content, end, sync=sync)
 
-    def error(self, content, end='\n'):
-        self.st.error(content, end)
+    def error(self, content, end='\n', *, sync=False):
+        self.st.error(content, end, sync=sync)
 
-    def critical(self, content, end='\n'):
-        self.st.critical(content, end)
+    def critical(self, content, end='\n', *, sync=False):
+        self.st.critical(content, end, sync=sync)
 
-    def png(self, pngFile):
-        self.st.png(pngFile)
+    def png(self, pngFile, *, sync=False):
+        self.st.png(pngFile, sync=sync)
 
-    def gif(self, gifFile):
-        self.st.gif(gifFile)
+    def gif(self, gifFile, *, sync=False):
+        self.st.gif(gifFile, sync=sync)
 
     def destroy(self):
         self.win.destroy()
