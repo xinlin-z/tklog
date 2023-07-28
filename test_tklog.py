@@ -1,5 +1,6 @@
+import sys
 import tkinter as tk
-from tklog import tklog
+from tklog import tklog, winlog
 import time
 import threading
 import random
@@ -29,9 +30,12 @@ def _poster(log):
 
 if __name__ == '__main__':  # test code
     root = tk.Tk()
-    root.title('test tklog')
-    log = tklog(master=root)
-    log.pack(fill='both', expand=True, side=tk.LEFT)
+    if sys.argv[1] == 'winlog':
+        log = winlog(root)
+    else:
+        root.title('test tklog')
+        log = tklog(master=root)
+        log.pack(fill='both', expand=True, side=tk.LEFT)
     log.log('insert a few log lines before mainloop...')
     log.log('insert a gif picture:')
     log.gif('funny.gif')

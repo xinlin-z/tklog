@@ -179,8 +179,9 @@ class tklog(ScrolledText):
 class winlog():
     """readonly modaless Toplevel log window class"""
 
-    def __init__(self, root, title='Log Window', withdrawRoot=False,
-                 destroyRoot=False):
+    def __init__(self, root, title='tklog window',
+                             withdrawRoot=True,
+                             destroyRoot=True):
         self.root = root
         if withdrawRoot:
             self.root.withdraw()
