@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import tkinter as tk
 from tkinter import Toplevel, PhotoImage
 from tkinter.scrolledtext import ScrolledText
@@ -8,17 +9,16 @@ from collections import deque
 import time
 
 
-__version = 'V0.13'
+__VER = 'V0.13'
 
 
 """
-About the sync argument for log interfaces (added in V0.12):
+About the SYNC argument in log interfaces (added in V0.12):
 
-You should be VERY VERY careful to decide set sync=True, since it is very
-often cause dead lock. Normally, it only should be set in background
-thread which needs to log to GUI text windows.
-
-You can not set sync=True in the event loop of GUI!!
+You should be VERY VERY careful to decide setting sync=True, since
+it is very often to end up with dead lock. Normally, it only should
+be set in background thread. You can not set sync=True in the event
+loop of GUI!!
 """
 class tklog(ScrolledText):
     """readonly scrolled text log class"""
@@ -55,7 +55,6 @@ class tklog(ScrolledText):
 
     def destroy(self):
         self.stop = 1
-        self.q.append(None)
 
     def _popup(self, event):
         self.rpop.post(event.x_root, event.y_root)
@@ -108,9 +107,7 @@ class tklog(ScrolledText):
             try:
                 pos = info[:9].find('@')
                 self._chState('on')
-                if pos == -1:
-                    self.insert(tk.END, '[undefined format]: '+info)
-                else:
+                if pos != -1:
                     if info[:pos] == 'CLEAR':
                         self.delete('1.0', tk.END)
                         self.pList = []
@@ -124,6 +121,8 @@ class tklog(ScrolledText):
                             self.insert(tk.END, repr(e)+'\n', 'DEBUG')
                     else:
                         self.insert(tk.END, info[pos+1:], info[:pos])
+                else:
+                    self.insert(tk.END, '[undefined format]: '+info)
                 self._chState('off')
                 if self.autoscroll.get() == 1:
                     self.see(tk.END)

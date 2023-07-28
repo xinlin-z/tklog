@@ -9,14 +9,14 @@ def _poster(log):
     while True:
         r = random.randint(1,7)
         if r == 1:
-            log.log('test sync log', sync=True)
+            log.log('Test SYNC log..!!', sync=True)
             log.log(time.strftime('%Y-%m-%d %H:%M:%S %A'))
         elif r == 2:
             log.debug('log is just like a cup of coffee!')
         elif r == 3:
             log.error('secret error...@#$%$#@#$%')
         elif r == 4:
-            log.warning('tomorrow is not weekend...')
+            log.warning('Bad news: tomorrow is not weekend...')
         elif r == 5:
             log.title('he is always playing games...')
             log.critical('this is a critical situation!')
