@@ -176,41 +176,6 @@ class tklog(ScrolledText):
         self.q.append('CLEAR@')
 
 
-class tklogHandler(logging.Handler):
-    """tklog handler inherited from logging.Handler"""
-
-    def __init__(self, **kw):
-        logging.Handler.__init__(self)
-        self.tklog = tklog(**kw)
-
-    def emit(self, record):
-        if record.levelno== logging.DEBUG:
-            self.tklog.debug(self.format(record))
-        if record.levelno== logging.INFO:
-            self.tklog.log(self.format(record))
-        if record.levelno== logging.WARNING:
-            self.tklog.warning(self.format(record))
-        if record.levelno== logging.ERROR:
-            self.tklog.error(self.format(record))
-        if record.levelno== logging.CRITICAL:
-            self.tklog.critical(self.format(record))
-
-    def title(self, msg):
-        self.tklog.title(msg)
-
-    def png(self, pngFile):
-        self.tklog.png(pngFile)
-
-    def gif(self, gifFile):
-        self.tklog.gif(gifFile)
-
-    def pack(self, **kw):
-        self.tklog.pack(**kw)
-
-    def grid(self, **kw):
-        self.tklog.grid(**kw)
-
-
 class winlog():
     """readonly modaless Toplevel log window class"""
 
@@ -282,34 +247,5 @@ class winlog():
         self.win.destroy()
         if self.destroyRoot:
             self.root.destroy()
-
-
-class winlogHandler(logging.Handler):
-    """winlog handler inherited from logging.Handler"""
-
-    def __init__(self, **kw):
-        logging.Handler.__init__(self)
-        self.winlog = winlog(**kw)
-
-    def emit(self, record):
-        if record.levelno== logging.DEBUG:
-            self.winlog.debug(self.format(record))
-        if record.levelno== logging.INFO:
-            self.winlog.log(self.format(record))
-        if record.levelno== logging.WARNING:
-            self.winlog.warning(self.format(record))
-        if record.levelno== logging.ERROR:
-            self.winlog.error(self.format(record))
-        if record.levelno== logging.CRITICAL:
-            self.winlog.critical(self.format(record))
-
-    def title(self, msg):
-        self.winlog.title(msg)
-
-    def png(self, pngFile):
-        self.winlog.png(pngFile)
-
-    def gif(self, gifFile):
-        self.winlog.gif(gifFile)
 
 
