@@ -1,11 +1,11 @@
 Log is just like a cup of coffee, and I like it anytime! :)
 
-    * [tklog](#tklog)
-    * [winlog](#winlog)
-    * [sample test code](#sample-test-code)
-    * [tkee](#tkee)
+* [tklog](#tklog)
+* [winlog](#winlog)
+* [sample test code](#sample-test-code)
+* [tkee](#tkee)
 
-## tklog
+# tklog
 
 **tklog:** a thread-safe log widget based on tkinter
 (inherited from ScrolledText).
@@ -20,13 +20,13 @@ should only be set in background thread which needs synchronization.
 For example, you want to make sure the log interface
 would be blocked until after the log info is shown on text window.
 
-## winlog
+# winlog
 
 **winlog:** a toplevel log window based on tklog, which creats a
 Toplevel window, contains a tklog widget, and has the ability to
 withdraw or destroy root.
 
-## sample test code
+# sample test code
 
 Read the sample test code, and you'll learn how to use tklog and
 winlog. And you can also run the sample test code:
@@ -43,6 +43,6 @@ Below is a screenshot for winlog:
 
 ![winlog.png](/winlog.png)
 
-## tkee
+# tkee
 
 
