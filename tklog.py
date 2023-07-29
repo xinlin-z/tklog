@@ -29,6 +29,8 @@ it is very often to end up with dead lock. Normally, it only should
 be set in background thread. You can not set sync=True in the event
 loop of GUI!!
 """
+
+
 class tklog(ScrolledText):
     """readonly scrolled text log class"""
 
