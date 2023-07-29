@@ -1,41 +1,43 @@
-# tklog
-a few handy log widgets based on tkinter
+Log is just like a cup of coffee, and I like it anytime! :)
 
-Log is just like a cup of Latte, and I like it anytime.
+## tklog
 
-There are four classes in tklog.py:
+**tklog:** a thread-safe log widget based on tkinter
+(inherited from ScrolledText).
 
-* **tklog** class, which is the base component for all others. It can be
-  packed into root or Toplevel window easily, and has a little power to
-  log pictures (png and gif).
+It can be packed into root or Toplevel window easily, and has a
+little power to log pictures (png and gif).
 
-* **tklogHandler** class, which is inherited from logging.Handler and
-  contains a tklog.
-
-* **winlog** class, which is created in a Toplevel window, contains a
-  tklog, and has the ability to withdraw or destroy root.
-
-* **winlogHandler** class, which is inherited from logging.Handler and
-  contains a winlog.
-
-There are also four piece of example code files for these classes.
-
-The log interface has an argument named sync from V0.12, default is False.
-You should be very careful about this argument, you can never use it in GUI
-event loop. Normally, sync=True should only be set in background thread which
-needs synchronization. For example, you want to make sure the log interface
+The log interfaces all have an argument named sync from V0.12,
+default is False. You should be very careful about this argument,
+you can never use it in GUI event loop. Normally, `sync=True`
+should only be set in background thread which needs synchronization.
+For example, you want to make sure the log interface
 would be blocked until after the log info is shown on text window.
 
-Please run and check the example code before enjoying the classes from tklog,
-and don't forget to try **right click** on the log area. Maybe it's a surprise
-for you. All the classes are **thread-safe**!
+## winlog
 
-    $python3 example_tklog.py
-    $python3 example_tklogHandler.py
-    $python3 example_winlog.py
-    $python3 example_winlogHandler.py
+**winlog:** a toplevel log window based on tklog, which creats a
+Toplevel window, contains a tklog widget, and has the ability to
+withdraw or destroy root.
 
-**中文参考： https://www.pynote.net/archives/1207**
+## sample test code
 
-Hope you like tklog.
+Read the sample test code, and you'll learn how to use tklog and
+winlog. And you can also run the sample test code:
+
+```python
+$ python test_tklog.py tklog
+$ python test_tklog.py winlog
+```
+
+Don't forget to try **right click** on the logging area. Maybe
+there's a surprise for you.
+
+Below is a screenshot for winlog:
+
+![winlog.png](/winlog.png)
+
+## tkee
+
 

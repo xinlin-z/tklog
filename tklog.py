@@ -1,9 +1,18 @@
 #!/usr/bin/env python3
+"""
+tklog: a thread-safe log widget based on tkinter
+       (inherited from ScrolledText).
+winlog: a toplevel log window based on tklog.
+
+Author:   xinlin-z
+Github:   https://github.com/xinlin-z/tklog
+Blog:     https://cs.pynote.net
+License:  MIT
+"""
 import tkinter as tk
 from tkinter import Toplevel, PhotoImage
 from tkinter.scrolledtext import ScrolledText
 from tkinter.filedialog import asksaveasfilename
-import logging
 import threading
 from collections import deque
 import time
@@ -194,7 +203,7 @@ class winlog():
         self.st.pack(fill='both', expand=True)
         self.frame_1 = tk.Frame(self.win)
         self.frame_1.pack(fill=tk.X)
-        self.top = tk.Button(self.frame_1, text='Pin', command=self._pin)
+        self.top = tk.Button(self.frame_1, text='pin', command=self._pin)
         self.top.pack(side=tk.LEFT, padx=2, pady=2)
         self.win.bind('<FocusIn>', self._focusIn)
         self.win.bind('<FocusOut>', self._focusOut)
@@ -212,11 +221,11 @@ class winlog():
         if self.pin == 0:
             self.win.attributes('-topmost', True)
             self.pin = 1
-            self.top['text'] = 'Unpin'
+            self.top['text'] = 'unpin'
         elif self.pin == 1:
             self.win.attributes('-topmost', False)
             self.pin = 0
-            self.top['text'] = 'Pin'
+            self.top['text'] = 'pin'
 
     def title(self, content, end='\n', *, sync=False):
         self.st.title(content, end, sync=sync)
