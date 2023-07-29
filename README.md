@@ -45,4 +45,13 @@ Below is a screenshot for winlog:
 
 # tkee
 
+It's a GUI tee! Tee store output into a file,
+tkee show them in winlog! Try it:
+
+```python
+$ cat tklog.py | python tkee.py
+$ ping bing.com | python tkee.py
+```
+
+Have fun! ^____^
 
